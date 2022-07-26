@@ -2,7 +2,7 @@
 
 ### Links
 
-
+[Periodic Tables Link](https://rest-reserv-nr-fe.herokuapp.com/dashboard)
 
 ---
 ## Project Description
