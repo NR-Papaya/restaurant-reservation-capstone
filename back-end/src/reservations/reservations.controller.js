@@ -3,6 +3,7 @@ const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 
 //----------------HELPER FUNCTIONS----------------
 
+//performs a read operation to verify reservation ID and assigns the response to res.locals.reservation
 async function verifyReservationId(req, res, next) {
 	const { reservation_id } = req.params;
 	const reservation = await service.read(reservation_id);
@@ -17,6 +18,7 @@ async function verifyReservationId(req, res, next) {
 	}
 }
 
+//checks the validity of all fields in the body data using boolean helper functions
 function checkValidFields(req, res, next) {
 	const validFields = [
 		"first_name",
@@ -107,6 +109,7 @@ function checkValidFields(req, res, next) {
 	}
 	return next();
 }
+
 // validate booked status for Post request
 function validateBookedStatus(status) {
 	if (status !== "booked") {
@@ -117,7 +120,7 @@ function validateBookedStatus(status) {
 
 // verify valid status for put request to /reservations/:reservation_id/status
 function verifyStatus(req, res, next) {
-	const validStatusList = ["booked", "seated", "finished","cancelled"];
+	const validStatusList = ["booked", "seated", "finished", "cancelled"];
 	const { status } = req.body.data;
 
 	const bodyStatus = res.locals.reservation.status;
@@ -133,6 +136,7 @@ function verifyStatus(req, res, next) {
 	return next();
 }
 
+// verifies date from the body data is valid by converting it in the new Date object
 function validateDate(date) {
 	date = new Date(date);
 	if (date.toString() === "Invalid Date") {
@@ -192,6 +196,7 @@ function validatePeople(peopleCount) {
 	return true;
 }
 
+//validates reservation day is not a tuesday
 function validateDay(date) {
 	date = date.split("-");
 	date = [date[1], date[2], date[0]].join("-");
@@ -201,6 +206,7 @@ function validateDay(date) {
 	}
 	return true;
 }
+
 // checks to see if the date is not in the past.
 // returns a boolean of true if passed validation for present/future date
 function validateIfFutureDate(date) {
@@ -236,6 +242,7 @@ function validateIfFutureDate(date) {
 
 	return true;
 }
+
 // helper function for validating future booking time
 // returns a boolean of true if the booking date and current date are the same
 function checkIfSameDayBooking(date) {
@@ -264,7 +271,6 @@ function checkIfSameDayBooking(date) {
 	}
 }
 
-
 function verifyEditableStatus(req, res, next) {
 	const { status } = res.locals.reservation;
 	if (status !== "booked") {
@@ -279,7 +285,7 @@ async function list(req, res) {
 
 	if (queryData["mobile_number"]) {
 		const { mobile_number } = queryData;
-		const data = await service.list(null, mobile_number);
+		const data = await service.listByTelephoneNumber(mobile_number);
 		return res.status(200).json({ data });
 	}
 
@@ -293,9 +299,9 @@ async function list(req, res) {
 			todayDate.getMonth() + 1,
 			todayDate.getDate(),
 		].join("-");
-		data = await service.list(todayDate);
+		data = await service.listByDate(todayDate);
 	} else {
-		data = await service.list(date);
+		data = await service.listByDate(date);
 	}
 	return res.json({
 		data: data,
