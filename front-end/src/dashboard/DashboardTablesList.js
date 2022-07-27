@@ -23,9 +23,9 @@ export default function DashboardTablesList({ tables }) {
 		}
 	};
 
-	const tablesList = tables.map((table, index) => {
+	const tablesList = tables.map((table) => {
 		return (
-			<tr key={index}>
+			<tr key={table.table_id}>
 				<td>{table.table_name}</td>
 				<td>{table.capacity}</td>
 				<td data-table-id-status={table.table_id}>

@@ -30,9 +30,9 @@ export default function ReservationsList({ reservations }) {
 		}
 	};
 
-	const reservationsArray = reservations.map((res, index) => {
+	const reservationsArray = reservations.map((res) => {
 		return (
-			<tr key={index}>
+			<tr key={res.reservation_id}>
 				<td>{res.reservation_id}</td>
 				<td data-reservation-id-status={res.reservation_id}>
 					{res.status}
